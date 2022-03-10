@@ -1,3 +1,8 @@
+from ast import Not
+from lib2to3.pgen2 import grammar
+from operator import truediv
+
+
 class Grafo:
     def __init__(self, ponderado = False, direcionado = False):
         self.ponderado = ponderado
@@ -136,7 +141,7 @@ class Grafo:
         print(f"Tour de Euler: {pilha2}")
         
 
-    def busca_profundidade(self, visitados = [], vertice = ""):
+    def busca_profundidade_GND(self, visitados = [], vertice = ""):
         if not vertice:
             vertice = list(self.grafo.keys())[0]
             visitados.append(vertice)
@@ -154,4 +159,53 @@ class Grafo:
                 self.busca_profundidade(visitados, x)
             else:
                 self.grafo[vertice].remove(x)
-        print(f"Travessia: {visitados}")        
+        print(f"Travessia: {visitados}")
+
+    def arcos_de_entrada(self):
+        i = 0
+        v = []
+        j = []
+        for i in self.grafo.values():
+            j.extend(i)
+        for i in self.grafo:
+            if i not in j:
+                v.append(i)
+        return v
+
+    def possui_arco(self, vertice):
+        j = []
+        for i in self.grafo.values():
+            j.extend(i)
+        if vertice in j: return True
+        else: return False
+
+    def busca_profundidade(self, vertice, visitados):
+        if vertice not in visitados:
+            visitados.append(vertice)
+            for i in self.grafo[vertice]:
+                self.busca_profundidade(i, visitados)
+        return visitados
+    
+    def kahn(self, vSemArco):
+        L = []
+        S = vSemArco
+        print(S)
+        while(len(S) > 0):
+            print(S)
+            aux = S.pop()
+            print(f"Desempilhou {aux}")
+            L.append(aux)
+            print(S)
+            while(self.grafo[aux]):
+                n = self.grafo[aux][0]
+                self.grafo[aux].remove(n)
+                print(f"Removeu {aux} -> {n}")
+                self.imprime()
+                if not self.possui_arco(n):
+                    print(f"Empilhou {n}")
+                    S.append(n)
+                else:
+                    print(f"{n} possui arestas de entrada")
+        if not self.grafo.values() : print("Grafo possui ciclo")
+        else: return L
+

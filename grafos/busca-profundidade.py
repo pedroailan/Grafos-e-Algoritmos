@@ -3,9 +3,9 @@ os.system('cls' if os.name == 'nt' else 'clear')
 import grafo as m
 
 
-g = m.Grafo(False, False)
+g = m.Grafo(False, True)
 #l = ["A", "B", "C", "D", "E"]
-l = ["1", "2", "3", "4", "5", "6", "7"]
+l = ["5", "7", "3", "11", "8", "2", "9", "10"]
 for i in l:
     g.insere_vertice(i)
 
@@ -14,15 +14,24 @@ for i in l:
 # g.insere_aresta("A", "D")
 # g.insere_aresta("B", "E")
 
-g.insere_aresta("1", "2")
-g.insere_aresta("1", "3")
-g.insere_aresta("2", "3")
-g.insere_aresta("3", "4")
-g.insere_aresta("3", "5")
-g.insere_aresta("3", "6")
-g.insere_aresta("3", "7")
-g.insere_aresta("4", "5")
+g.insere_aresta("5", "11")
+g.insere_aresta("7", "11")
+g.insere_aresta("7", "8")
+g.insere_aresta("3", "8")
+g.insere_aresta("3", "10")
+g.insere_aresta("11", "2")
+g.insere_aresta("11", "9")
+g.insere_aresta("11", "10")
+g.insere_aresta("8", "9")
 
 
 g.imprime()
-g.busca_profundidade()
+#g.busca_profundidade()
+verticesSemArcosDeEntrada = g.arcos_de_entrada()
+for i in verticesSemArcosDeEntrada:
+    travessia = g.busca_profundidade(i, [])
+    print(travessia)
+print("\nKahn")
+travessia = g.kahn(verticesSemArcosDeEntrada)
+print(travessia)
+
