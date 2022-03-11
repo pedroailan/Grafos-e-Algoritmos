@@ -1,8 +1,3 @@
-from ast import Not
-from lib2to3.pgen2 import grammar
-from operator import truediv
-
-
 class Grafo:
     def __init__(self, ponderado = False, direcionado = False):
         self.ponderado = ponderado
@@ -161,7 +156,7 @@ class Grafo:
                 self.grafo[vertice].remove(x)
         print(f"Travessia: {visitados}")
 
-    def arcos_de_entrada(self):
+    def listar_vertice_sem_arcos_de_entrada(self):
         i = 0
         v = []
         j = []
@@ -172,7 +167,7 @@ class Grafo:
                 v.append(i)
         return v
 
-    def possui_arco(self, vertice):
+    def possui_arco_de_entrada(self, vertice):
         j = []
         for i in self.grafo.values():
             j.extend(i)
@@ -186,26 +181,18 @@ class Grafo:
                 self.busca_profundidade(i, visitados)
         return visitados
     
+    
     def kahn(self, vSemArco):
         L = []
         S = vSemArco
-        print(S)
-        while(len(S) > 0):
-            print(S)
-            aux = S.pop()
-            print(f"Desempilhou {aux}")
-            L.append(aux)
-            print(S)
-            while(self.grafo[aux]):
-                n = self.grafo[aux][0]
-                self.grafo[aux].remove(n)
-                print(f"Removeu {aux} -> {n}")
-                self.imprime()
-                if not self.possui_arco(n):
-                    print(f"Empilhou {n}")
-                    S.append(n)
-                else:
-                    print(f"{n} possui arestas de entrada")
+        while(S):
+            v = S.pop()
+            L.append(v)
+            while(self.grafo[v]):
+                w = self.grafo[v][0]
+                self.grafo[v].remove(w)
+                if not self.possui_arco_de_entrada(w):
+                    S.append(w)
         if not self.grafo.values() : print("Grafo possui ciclo")
         else: return L
 
