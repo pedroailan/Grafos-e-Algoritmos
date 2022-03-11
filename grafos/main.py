@@ -26,14 +26,15 @@ g.insere_aresta("11", "10")
 g.insere_aresta("8", "9")
 
 print("----------- Grafo 1 --------------")
-g.imprime()
-verticesSemArcosDeEntrada = g.listar_vertice_sem_arcos_de_entrada()
-for i in verticesSemArcosDeEntrada:
-    travessia = g.busca_profundidade(i, [])
-    print(f"Travessia para {i}: {travessia}")
+print("DFS")
+g.dfs()
+v = g.listar_vertice_sem_arcos_de_entrada()
+# for i in verticesSemArcosDeEntrada:
+#     travessia = g.busca_profundidade(i, [])
+#     print(f"Travessia para {i}: {travessia}")
 
 print("\nKahn")
-travessia = g.kahn(verticesSemArcosDeEntrada)
+travessia = g.kahn(v)
 print(travessia)
 print()
 
@@ -65,12 +66,13 @@ g2.insere_aresta("GRAVATA", "PALETO")
 g2.insere_aresta("MEIAS", "SAPATOS")
 
 print("----------- Grafo 2 --------------")
-g2.imprime()
-verticesSemArcosDeEntrada = g2.listar_vertice_sem_arcos_de_entrada()
-for i in verticesSemArcosDeEntrada:
-    travessia = g2.busca_profundidade(i, [])
-    print(f"Travessia para {i}: {travessia}")
+print("DFS")
+g2.dfs()
+v = g2.listar_vertice_sem_arcos_de_entrada()
+# for i in verticesSemArcosDeEntrada:
+#     travessia = g2.busca_profundidade(i, [])
+#     print(f"Travessia para {i}: {travessia}")
 
 print("\nKahn")
-travessia = g2.kahn(verticesSemArcosDeEntrada)
+travessia = g2.kahn(v)
 print(travessia)

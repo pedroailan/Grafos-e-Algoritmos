@@ -196,3 +196,19 @@ class Grafo:
         if not self.grafo.values() : print("Grafo possui ciclo")
         else: return L
 
+    def dfs(self):
+        L = []
+        i = 0
+        while(set(self.grafo.keys()).issubset(L) == False ):
+            vertice = list(self.grafo.keys())[i]
+            if vertice not in L:
+                self.visite(vertice, L)
+            i += 1
+        L.reverse()
+        print(L)
+
+    def visite(self, vertice, L):
+        if vertice not in L:
+            for i in self.grafo[vertice]:
+                self.visite(i, L)
+            L.append(vertice)
