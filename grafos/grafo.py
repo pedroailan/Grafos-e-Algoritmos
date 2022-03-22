@@ -32,7 +32,6 @@ class Grafo:
                     self.grafo[vertice1].append(vertice2)
                     self.grafo[vertice2].append(vertice1)
             
-    
     def remove_vertice(self, vertice):
         if vertice not in self.grafo:
             return
@@ -134,7 +133,6 @@ class Grafo:
                     pilha2.append(pilha1.pop())
             i += 1
         print(f"Tour de Euler: {pilha2}")
-        
 
     def busca_profundidade_GND(self, visitados = [], vertice = ""):
         if not vertice:
@@ -151,7 +149,7 @@ class Grafo:
                     self.grafo[x].remove(vertice)
 
                 self.grafo[vertice].remove(x)
-                self.busca_profundidade(visitados, x)
+                return self.busca_profundidade_GND(visitados, x)
             else:
                 self.grafo[vertice].remove(x)
         print(f"Travessia: {visitados}")
@@ -180,7 +178,6 @@ class Grafo:
             for i in self.grafo[vertice]:
                 self.busca_profundidade(i, visitados)
         return visitados
-    
     
     def kahn(self, vSemArco):
         L = []
@@ -212,3 +209,65 @@ class Grafo:
             for i in self.grafo[vertice]:
                 self.visite(i, L)
             L.append(vertice)
+
+    def print_matriz(self, matriz, tamanho):
+        for i in range(tamanho):
+            for y in range(tamanho):
+                print(format(matriz[i][y], "<3"), end= " ")
+            print()
+    
+    def ler_arquivo(self, nome):
+        vertices = []
+        arquivo = open(nome, 'r')
+    
+        tamanho = 0
+        matriz = [[]]
+        i = 0
+        j = 0
+        for linha in arquivo.readlines():
+            if i == 0:
+                 tamanho = len(linha)
+                 matriz = [[0] * tamanho for i in range(tamanho)]
+            #     for c in range(tamanho):
+            #         matriz[0][c] = c
+            #     for l in range(tamanho):
+            #         matriz[l][0] = l
+            #     i = 1
+            #     j = 1
+            for item in linha:
+                if item != "\n":
+                    matriz[i][j] = item.replace("#", "0").replace(" ", "1")
+                    j += 1
+            j = 0
+            i += 1
+        self.rotula(matriz, tamanho)
+        self.print_matriz(matriz, tamanho)
+        self.constroi_grafo(matriz, tamanho)
+    
+    def rotula(self, matriz, tamanho):
+        count = 1
+        for i in range(tamanho):
+            for j in range(tamanho):
+                item = matriz[i][j]
+                if item == "1":
+                    matriz[i][j] = count
+                    count += 1
+    
+    def constroi_grafo(self, matriz, tamanho):
+        for i in range(tamanho):
+            for j in range(tamanho):
+                item = str(matriz[i][j])
+                if item != "0":
+                    self.insere_vertice(str(item))
+
+        for v in self.grafo:
+            for i in range(tamanho - 1):
+                for j in range(tamanho - 1):
+                    item = str(matriz[i][j])
+                    if item == v:
+                        direita = str(matriz[i][j + 1])
+                        if direita != "0": self.insere_aresta(v, direita)
+                        abaixo = str(matriz[i + 1][j])
+                        if abaixo != "0": self.insere_aresta(v, abaixo)
+        self.imprime()
+
