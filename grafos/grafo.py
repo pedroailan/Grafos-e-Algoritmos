@@ -1,8 +1,10 @@
+import os
 class Grafo:
     def __init__(self, ponderado = False, direcionado = False):
         self.ponderado = ponderado
         self.direcionado = direcionado
         self.grafo = {}
+        self.visitados = []
     
     def insere_vertice(self, vertice):
         if vertice in self.grafo:
@@ -153,6 +155,34 @@ class Grafo:
             else:
                 self.grafo[vertice].remove(x)
         print(f"Travessia: {visitados}")
+    
+    def DFS(self, vertice):
+        self.visitados.append(vertice)
+        for i in self.grafo[vertice]:
+            if i not in self.visitados:
+                self.DFS(i)
+
+    def BFS(self, vertice):
+        final = False
+        fila = []
+        visitados = []
+        fila.append(vertice)
+        visitados.append(vertice)
+        saida = list(self.grafo.keys())[-1]
+        while(fila):
+            v = fila[0]
+            fila.remove(v)
+            for i in self.grafo[v]:
+                if i not in visitados:
+                    visitados.append(i)
+                    fila.append(i)
+                if i == saida:
+                    final= True 
+                    break
+            if final:
+                break
+        print(visitados)
+        return visitados
 
     def listar_vertice_sem_arcos_de_entrada(self):
         i = 0
@@ -193,17 +223,6 @@ class Grafo:
         if not self.grafo.values() : print("Grafo possui ciclo")
         else: return L
 
-    def dfs(self):
-        L = []
-        i = 0
-        while(set(self.grafo.keys()).issubset(L) == False ):
-            vertice = list(self.grafo.keys())[i]
-            if vertice not in L:
-                self.visite(vertice, L)
-            i += 1
-        L.reverse()
-        print(L)
-
     def visite(self, vertice, L):
         if vertice not in L:
             for i in self.grafo[vertice]:
@@ -217,33 +236,23 @@ class Grafo:
             print()
     
     def ler_arquivo(self, nome):
-        vertices = []
         arquivo = open(nome, 'r')
-    
         tamanho = 0
         matriz = [[]]
         i = 0
         j = 0
         for linha in arquivo.readlines():
             if i == 0:
-                 tamanho = len(linha)
-                 matriz = [[0] * tamanho for i in range(tamanho)]
-            #     for c in range(tamanho):
-            #         matriz[0][c] = c
-            #     for l in range(tamanho):
-            #         matriz[l][0] = l
-            #     i = 1
-            #     j = 1
+                 tamanho = len(linha) - 1
+                 matriz = [[0] * tamanho for i in range(tamanho)] #cria matriz mediante o tamanho linha e colunas do txt
             for item in linha:
                 if item != "\n":
-                    matriz[i][j] = item.replace("#", "0").replace(" ", "1")
+                    matriz[i][j] = item.replace("#", "0").replace(" ", "1") # altera os caracteres e insere na matriz
                     j += 1
             j = 0
             i += 1
-        self.rotula(matriz, tamanho)
-        self.print_matriz(matriz, tamanho)
-        self.constroi_grafo(matriz, tamanho)
-    
+        return (matriz, tamanho)
+
     def rotula(self, matriz, tamanho):
         count = 1
         for i in range(tamanho):
@@ -252,22 +261,41 @@ class Grafo:
                 if item == "1":
                     matriz[i][j] = count
                     count += 1
-    
-    def constroi_grafo(self, matriz, tamanho):
+
         for i in range(tamanho):
             for j in range(tamanho):
                 item = str(matriz[i][j])
                 if item != "0":
                     self.insere_vertice(str(item))
 
-        for v in self.grafo:
-            for i in range(tamanho - 1):
-                for j in range(tamanho - 1):
-                    item = str(matriz[i][j])
-                    if item == v:
-                        direita = str(matriz[i][j + 1])
-                        if direita != "0": self.insere_aresta(v, direita)
-                        abaixo = str(matriz[i + 1][j])
-                        if abaixo != "0": self.insere_aresta(v, abaixo)
-        self.imprime()
+        vertices = self.grafo.keys()
+        for i in range(tamanho - 1):
+            for j in range(tamanho - 1):
+                item = str(matriz[i][j])
+                if item in vertices:
+                    direita = str(matriz[i][j + 1])
+                    if direita != "0": self.insere_aresta(item, direita)
+                    abaixo = str(matriz[i + 1][j])
+                    if abaixo != "0": self.insere_aresta(item, abaixo)
+        return matriz
+    
+    def escreve_arquivo(self, nome_arquivo ,matriz, tamanho, caminho):
+        if os.path.exists(nome_arquivo):
+             os.remove(nome_arquivo)
 
+        for i in range(tamanho):
+            for j in range(tamanho):
+                item = str(matriz[i][j])
+                if item not in caminho:
+                    matriz[i][j] = "#"
+                else:
+                    matriz[i][j] = "1"
+        f = open(nome_arquivo, 'w+')
+        linha = ''
+        for i in range(tamanho):
+            for j in range(tamanho):
+                item = str(matriz[i][j])
+                linha += f"{item} "
+            f.writelines(linha + '\n')
+            linha = ''
+        f.close()
