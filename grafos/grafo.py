@@ -1,4 +1,5 @@
 import os
+from typing import NoReturn
 class Grafo:
     def __init__(self, ponderado = False, direcionado = False):
         self.ponderado = ponderado
@@ -299,3 +300,41 @@ class Grafo:
             f.writelines(linha + '\n')
             linha = ''
         f.close()
+    def min(list):
+        i = int('inf')
+        for element in list:
+            if element < i:
+                i = element
+        return i
+
+    def distancia(self, v1, v2):
+        adj = self.grafo[v1]
+        for i in adj:
+            if i[0] == v2:
+                return i[1]
+
+    def dijkstra(self, origem, destino):
+        caminho = {}
+        verticesFechados = {origem : [origem, 0]}
+        verticesAbertos = set(self.grafo)
+        
+        while verticesAbertos:
+            menor = None
+            for v in verticesAbertos:
+                if v in verticesFechados.keys():
+                    if menor is None:
+                        menor = v
+                    elif verticesFechados[menor][1] > verticesFechados[v][1]:
+                        menor = v
+            if menor is None: break
+
+            verticesAbertos.remove(menor)
+            pesoAtual = verticesFechados[menor][1]
+
+            for u in self.grafo[menor]:
+                peso = pesoAtual + self.distancia(menor, u[0])
+                if u[0] not in list(verticesFechados.keys()) or peso < verticesFechados[u][1]:
+                    verticesFechados[u[0]] = [u[0], u[1]]
+                    caminho[u[0]] = menor
+            
+            print(caminho)
